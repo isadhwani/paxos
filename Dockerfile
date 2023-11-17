@@ -18,6 +18,7 @@ ADD src/main/java/local/Utils.java /app/local/
 
 
 ADD /docker-compose-testcases-and-hostsfiles-lab4/hostsfile-testcase1.txt /app/
+ADD /docker-compose-testcases-and-hostsfiles-lab4/hostsfile-testcase2.txt /app/
 
 RUN javac /app/models/StateValues.java
 RUN javac /app/messaging/TCPListener.java

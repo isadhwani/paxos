@@ -21,6 +21,8 @@ public class TCPTalker extends Thread {
 
     public boolean sendPrepareAck = false;
 
+    public boolean sendAcceptedProposal = false;
+
 
 
 
@@ -34,14 +36,8 @@ public class TCPTalker extends Thread {
 
     @Override
     public void run() {
-        System.out.println("Starting talker to " + targetHostname + " on port " + port);
         while (true) {
-            //printMessagesToSend();
-
-            //System.out.println("Should this talker on port " + this.port + " send a token? " + this.sendToken);
-
             try {
-                //System.out.println("Send marker? : " + this.sendMarker);
                 Socket socket = new Socket(targetHostname, port);
 
                 OutputStream outputStream = socket.getOutputStream();
@@ -51,7 +47,7 @@ public class TCPTalker extends Thread {
                     String message = "{id:" + myHostname + ", message:PREPARE, value:" + state.getValueToPropose() +
                             ", proposalNumber:" + proposalNumber + "}";
 
-                    System.out.println("Sending PROPOSAL to server: " + message);
+                    System.out.println("Sending PREPARE to server: " + message);
                     byte[] messageBytes = message.getBytes();
                     outputStream.write(messageBytes);
                     outputStream.flush();
@@ -83,6 +79,16 @@ public class TCPTalker extends Thread {
                     outputStream.flush();
 
                     sendAcceptAck = false;
+                } else if(sendAcceptedProposal) {
+                    String message = "{id:" + myHostname + ", message:ACCEPTED_PROPOSAL, acceptedValue:" + state.getValueDecided() +
+                            ", acceptedProposal: " + state.getAcceptedProposal() + "}";
+
+                    System.out.println("Sending ACCEPTED_PROPOSAL to server: " + message);
+                    byte[] messageBytes = message.getBytes();
+                    outputStream.write(messageBytes);
+                    outputStream.flush();
+
+                    sendAcceptedProposal = false;
                 }
 
 

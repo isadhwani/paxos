@@ -30,12 +30,12 @@ public class Learner extends Role{
     }
 
     @Override
-    public void sendProposal() {
+    public void sendProposal(float seconds) {
         throw new IllegalStateException("Learner cannot send proposal");
     }
 
     @Override
-    public void sendPrepareAck() {
+    public void sendPrepareAck(int minProposalNumber) {
         throw new IllegalStateException("Learner cannot send accept");
     }
 
@@ -45,8 +45,13 @@ public class Learner extends Role{
     }
 
     @Override
-    public void sendAcceptAck() {
+    public void sendAcceptAck(int s) {
         throw new IllegalStateException("Learner cannot send accept ack");
+    }
+
+    @Override
+    public void sendAcceptedProposal(int s) {
+        throw new IllegalStateException("Learner cannot send accepted proposal");
     }
 
     @Override

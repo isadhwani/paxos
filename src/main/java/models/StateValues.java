@@ -22,10 +22,11 @@ public class StateValues{
     // Seperated by commas (as sent in from hostsfile)
     private List<Role> roles;
 
-    int minProposal = 0;
+    int minProposal = 1;
     private boolean sentProposal = false;
     private int acceptedProposal = -1;
     private boolean setSendAcceptAck = false;
+    private boolean sendAcceptedProposal = false;
 
     public synchronized char getValueToPropose() {
         return valueToPropose;
@@ -70,63 +71,75 @@ public class StateValues{
         return isDecided;
     }
 
-    public void setSendPrepareAck(boolean b) {
+    public synchronized void setSendPrepareAck(boolean b) {
         this.sendPrepareAck = b;
     }
 
-    public boolean getIsProposer() {
+    public synchronized boolean getIsProposer() {
         return this.isProposer;
     }
 
-    public boolean getSendPrepareAck() {
+    public synchronized boolean getSendPrepareAck() {
         return this.sendPrepareAck;
     }
 
-    public void setIsProposer(boolean b) {
+    public synchronized void setIsProposer(boolean b) {
         this.isProposer = b;
     }
 
-    public boolean getSentProposal() {
+    public synchronized boolean getSentProposal() {
         return this.sentProposal;
     }
 
-    public void setSentProposal(boolean b) {
+    public synchronized void setSentProposal(boolean b) {
         this.sentProposal = b;
     }
 
-    public int getMinProposal() {
+    public synchronized int getMinProposal() {
         return this.minProposal;
     }
 
-    public int setMinProposal(int minProposal) {
+    public synchronized int setMinProposal(int minProposal) {
         return this.minProposal = minProposal;
     }
 
-    public void setAcceptedPropsal(int proposalNum) {
+    public synchronized void setAcceptedPropsal(int proposalNum) {
         this.acceptedProposal = proposalNum;
     }
 
-    public void setSendAcceptAck(boolean b) {
+    public synchronized void setSendAcceptAck(boolean b) {
         this.setSendAcceptAck = b;
     }
 
-    public boolean getSendAcceptAck() {
+    public synchronized boolean getSendAcceptAck() {
         return this.setSendAcceptAck;
     }
 
-    public int getAcceptAckCount() {
+    public synchronized int getAcceptAckCount() {
         return acceptAckCount;
     }
 
-    public void setAcceptAckCount(int acceptAckCount) {
+    public synchronized void setAcceptAckCount(int acceptAckCount) {
         this.acceptAckCount = acceptAckCount;
     }
 
-    public void setValueDecided(char value) {
+    public synchronized void setValueDecided(char value) {
         this.valueDecided = value;
     }
 
-    public char getValueDecided(char value) {
+    public synchronized char getValueDecided(char value) {
         return this.valueDecided;
+    }
+
+    public synchronized void setSendAcceptedProposal(boolean b) {
+        this.sendAcceptedProposal = b;
+    }
+
+    public synchronized boolean getSendAcceptedProposal() {
+        return this.sendAcceptedProposal;
+    }
+
+    public synchronized int getAcceptedProposal() {
+        return this.acceptedProposal;
     }
 }

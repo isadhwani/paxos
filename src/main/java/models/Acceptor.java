@@ -29,7 +29,9 @@ public class Acceptor extends Role {
                 }
             }
         }
-        System.out.println("Proposer id: " + proposerId);
+
+
+//        System.out.println("Creating acceptor corresponding to proposal id: " + proposerId);
     }
 
     @Override
@@ -62,16 +64,17 @@ public class Acceptor extends Role {
     }
 
     @Override
-    public void sendProposal() {
+    public void sendProposal(float seconds) {
         throw new IllegalStateException("Acceptor cannot send proposal");
     }
 
     @Override
-    public void sendPrepareAck() {
-        System.out.println("Sending prepare ack!");
+    public void sendPrepareAck(int minProposalNumber) {
         // TODO: Is this the correct logic? Do I need another counter to track this?
-        TCPConnection currentProposer = proposerConnections.get(actionIndex - 1);
-        currentProposer.talker.sendPrepareAck = true;
+        if (this.actionIndex == minProposalNumber) {
+            TCPConnection currentProposer = proposerConnections.get(0);
+            currentProposer.talker.sendPrepareAck = true;
+        }
     }
 
     @Override
@@ -80,9 +83,19 @@ public class Acceptor extends Role {
     }
 
     @Override
-    public void sendAcceptAck() {
-        TCPConnection currentProposer = proposerConnections.get(actionIndex - 1);
-        currentProposer.talker.sendAcceptAck = true;
+    public void sendAcceptAck(int minProposalNumber) {
+        if (this.actionIndex == minProposalNumber) {
+            TCPConnection currentProposer = proposerConnections.get(0);
+            currentProposer.talker.sendAcceptAck = true;
+        }
+    }
+
+    @Override
+    public void sendAcceptedProposal(int minProposalNumber) {
+        if (this.actionIndex == minProposalNumber) {
+            TCPConnection currentProposer = proposerConnections.get(0);
+            currentProposer.talker.sendAcceptedProposal = true;
+        }
     }
 
 

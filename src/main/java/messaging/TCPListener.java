@@ -28,7 +28,7 @@ public class TCPListener extends Thread {
 
     @Override
     public void run() {
-        System.out.println("Starting listener from " + targetHostname + " on port " + port);
+//        System.out.println("Starting listener from " + targetHostname + " on port " + port);
         try {
             ServerSocket serverSocket = new ServerSocket(port);
             //System.out.println("Server is listening on port " + port);
@@ -66,11 +66,15 @@ public class TCPListener extends Thread {
                     String msgType = decoded.get("message");
 
                     if (msgType.equals("PREPARE")) {
-                        System.out.println("Received proposal, determining if i can send prepare ack...");
+                        //System.out.println("Received proposal, determining if i can send prepare ack...");
                         if(!state.getIsDecided()) {
                             state.setSendPrepareAck(true);
+                            state.setValueToPropose(decoded.get("value").charAt(0));
                         } else {
                             // TODO: determine what to do if we've already accepted...
+                            System.out.println("Already accepted! Sending accepted proposal...");
+                            state.setMinProposal(Integer.parseInt(decoded.get("proposalNumber")));
+                            state.setSendAcceptedProposal(true);
                         }
 
                     } else if (state.getIsProposer() && msgType.equals("PREPARE_ACK")) {
@@ -80,7 +84,7 @@ public class TCPListener extends Thread {
 
                     } else if (msgType.equals("ACCEPT")) {
                         int proposalNum = Integer.parseInt(decoded.get("proposalNumber"));
-                        System.out.println("Received accept, determining if i can send accept ack...");
+                        //System.out.println("Received accept, determining if i can send accept ack...");
                         if(!state.getIsDecided() && proposalNum >= state.getMinProposal()) {
                             state.setMinProposal(proposalNum);
                             state.setAcceptedPropsal(proposalNum);
@@ -95,7 +99,13 @@ public class TCPListener extends Thread {
                         int temp = state.getAcceptAckCount();
                         state.setAcceptAckCount(temp + 1);
                         System.out.println("Received ACCEPT_ACK, count is now: " + state.getAcceptAckCount());
+                    } else if(state.getIsProposer() && msgType.equals("ACCEPTED_PROPOSAL")) {
+                        System.out.println("System has already accepted a proposal, deciding value: " + decoded.get("acceptedValue"));
+                        state.setIsDecided(true);
+                        state.setValueDecided(decoded.get("acceptedValue").charAt(0));
+                        state.setAcceptedPropsal(Integer.parseInt(decoded.get("acceptedProposal")));
                     }
+
                 }
                 sleep(1);
             }

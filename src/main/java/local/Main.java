@@ -39,9 +39,6 @@ public class Main {
         String myHostname = getMyHostname();
         StateValues state = new StateValues();
 
-        // HARDCODE
-        //myHostname = "peer3";
-
         List<String> hostsfileInfo = getPeerList(hostsfile);
         Map<String, String> peersToRoles = new HashMap<String, String>();
 
@@ -66,24 +63,22 @@ public class Main {
         state.setValueToPropose(value);
 
 
-        for(Role role : myRoles) {
-            System.out.println(role);
-        }
-        startProgramLogic(myRoles, state);
+
+        startProgramLogic(myRoles, state, delay);
     }
 
     /**
      * Main distributed algorithm for paxos
      */
-    public static void startProgramLogic(List<Role> myRoles, StateValues state) {
+    public static void startProgramLogic(List<Role> myRoles, StateValues state, float delay) {
         while(true) {
             if(state.getIsProposer() && !state.getSentProposal()) {
-                myRoles.stream().forEach(role -> role.sendProposal());
+                myRoles.stream().forEach(role -> role.sendProposal(delay));
                 state.setSentProposal(true);
             }
 
             if(state.getSendPrepareAck()) {
-                myRoles.stream().forEach(role -> role.sendPrepareAck());
+                myRoles.stream().forEach(role -> role.sendPrepareAck(state.getMinProposal()));
                 state.setSendPrepareAck(false);
             }
 
@@ -93,7 +88,7 @@ public class Main {
             }
 
             if(state.getSendAcceptAck()) {
-                myRoles.stream().forEach(role -> role.sendAcceptAck());
+                myRoles.stream().forEach(role -> role.sendAcceptAck(state.getMinProposal()));
                 state.setSendAcceptAck(false);
             }
 
@@ -102,6 +97,11 @@ public class Main {
                 state.setValueDecided(state.getValueToPropose());
                 System.out.println("Value decided: " + state.getValueDecided());
                 state.setAcceptAckCount(0);
+            }
+
+            if(state.getSendAcceptedProposal()) {
+                myRoles.stream().forEach(role -> role.sendAcceptedProposal(state.getMinProposal()));
+                state.setSendAcceptedProposal(false);
             }
 
             sleep(0.01f);

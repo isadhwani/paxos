@@ -32,7 +32,7 @@ public class Proposer extends Role {
                 }
             }
         }
-        System.out.println("Acceptor ids: " + acceptorIds);
+//        System.out.println("Acceptor ids: " + acceptorIds);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class Proposer extends Role {
         state.setIsProposer(true);
 
         for (String acceptorId : acceptorIds) {
-            System.out.println("Processing acceptor id: " + acceptorId);
+//            System.out.println("Processing acceptor id: " + acceptorId);
             int acceptorIndex = u.extractNumberFromTarget(acceptorId, "peer");
             int talkerPort = myPeerIndex * 10 + START_PORT + acceptorIndex;
             int listenPort = acceptorIndex * 10 + START_PORT + myPeerIndex;
@@ -69,8 +69,11 @@ public class Proposer extends Role {
     }
 
     @Override
-    public void sendProposal() {
-        System.out.println("Sending proposal!");
+    public void sendProposal(float seconds) {
+//        System.out.println("Sending proposal!");
+        if(actionIndex > 1) {
+            u.sleep(seconds);
+        }
 
         for (TCPConnection conn : acceptorConnections) {
             conn.talker.sendProposal = true;
@@ -79,7 +82,7 @@ public class Proposer extends Role {
     }
 
     @Override
-    public void sendPrepareAck() {
+    public void sendPrepareAck(int s) {
         throw new IllegalStateException("Proposer cannot send accept");
     }
 
@@ -91,8 +94,13 @@ public class Proposer extends Role {
     }
 
     @Override
-    public void sendAcceptAck() {
+    public void sendAcceptAck(int s) {
         throw new IllegalStateException("Proposer cannot send accept ack");
+    }
+
+    @Override
+    public void sendAcceptedProposal(int s) {
+        throw new IllegalStateException("Proposer cannot send accepted proposal");
     }
 
     @Override

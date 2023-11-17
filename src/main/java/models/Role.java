@@ -46,12 +46,12 @@ public abstract class Role {
      */
     public abstract void startTalkers();
 
-    public abstract void sendProposal();
+    public abstract void sendProposal(float seconds);
 
     /**
      * Sends an accept message from all acceptors to proposer, depending on the current min proposal number
      */
-    public abstract void sendPrepareAck();
+    public abstract void sendPrepareAck(int minProposalNumber);
 
     /**
      * If this peer is a proposer, broadcast an accept of the current value to all peers in system
@@ -61,6 +61,10 @@ public abstract class Role {
     /**
      * If this peer is an acceptor, send an accept ack to the proposer
      */
-    public abstract void sendAcceptAck();
+    public abstract void sendAcceptAck(int minProposalNum);
 
+    /**
+     * If this peer is an acceptor and has already accepted a value, tell the proposer that the value has been accepted
+     */
+    public abstract void sendAcceptedProposal(int minProposalNum);
 }
